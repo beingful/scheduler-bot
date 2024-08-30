@@ -14,7 +14,7 @@ steps:
   displayName: Crete base image
   inputs:
     command: 'build'
-    arguments: '--force-rm'
+    arguments: '--target base'
     Dockerfile: '**/base.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: '$(CONTAINER_NAME):base'
@@ -25,7 +25,7 @@ steps:
   displayName: Restore
   inputs:
     command: 'build'
-    arguments: '--force-rm --build-arg BUILD_CONFIGURATION'
+    arguments: '--build-arg BUILD_CONFIGURATION --target restore'
     Dockerfile: '**/restore.Dockerfile'
     buildContext: './Scheduler.Bot'
     #tags: '$(CONTAINER_NAME):restore'
@@ -36,7 +36,7 @@ steps:
   displayName: Build
   inputs:
     command: 'build'
-    arguments: '--force-rm --target restore --pull=false --build-arg BUILD_CONFIGURATION --build-arg CONTAINER_NAME'
+    arguments: '--pull=false --build-arg BUILD_CONFIGURATION --build-arg CONTAINER_NAME --target build'
     Dockerfile: '**/build.Dockerfile'
     buildContext: './Scheduler.Bot'
     #tags: '$(CONTAINER_NAME):build'
@@ -47,7 +47,7 @@ steps:
   displayName: Publish
   inputs:
     command: 'build'
-    arguments: '--force-rm --target build --pull=false --build-arg CONTAINER_NAME'
+    arguments: '--pull=false --build-arg CONTAINER_NAME --target publish'
     Dockerfile: '**/publish.Dockerfile'
     buildContext: './Scheduler.Bot'
     #tags: '$(CONTAINER_NAME):publish'
@@ -58,7 +58,7 @@ steps:
   inputs:
     repository: 'hannakasai002/scheduler-slack'
     command: 'buildAndPush'
-    arguments: '--force-rm --target base --pull=false --build-arg CONTAINER_NAME'
+    arguments: '--pull=false --build-arg CONTAINER_NAME --target final'
     Dockerfile: '**/final.Dockerfile'
     buildContext: './Scheduler.Bot'
     #tags: '$(CONTAINER_NAME):$(FINAL_IMAGE_TAG)'
