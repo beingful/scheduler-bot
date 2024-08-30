@@ -3,7 +3,64 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
+  
+variables:
+  BUILD_CONFIGURATION: Release
+  CONTAINER_NAME: scheduler-slack
+  FINAL_IMAGE_TAG: latest
 
 steps:
-- script: echo Build initiated...
-  displayName: 'Start the build'
+- task: Docker@2
+  displayName: Crete base image
+  inputs:
+    command: 'build'
+    arguments: '--force-rm'
+    Dockerfile: '**/base.Dockerfile'
+    buildContext: './Scheduler.Bot'
+    tags: '$(CONTAINER_NAME):base'
+    addPipelineData: false
+    addBaseImageData: false
+
+- task: Docker@2
+  displayName: Restore
+  inputs:
+    command: 'build'
+    arguments: '--force-rm --build-arg BUILD_CONFIGURATION'
+    Dockerfile: '**/restore.Dockerfile'
+    buildContext: './Scheduler.Bot'
+    tags: '$(CONTAINER_NAME):restore'
+    addPipelineData: false
+    addBaseImageData: false
+
+- task: Docker@2
+  displayName: Build
+  inputs:
+    command: 'build'
+    arguments: '--force-rm --build-arg BUILD_CONFIGURATION --build-arg CONTAINER_NAME'
+    Dockerfile: '**/build.Dockerfile'
+    buildContext: './Scheduler.Bot'
+    tags: '$(CONTAINER_NAME):build'
+    addPipelineData: false
+    addBaseImageData: false
+
+- task: Docker@2
+  displayName: Publish
+  inputs:
+    command: 'build'
+    arguments: '--force-rm --build-arg CONTAINER_NAME'
+    Dockerfile: '**/publish.Dockerfile'
+    buildContext: './Scheduler.Bot'
+    tags: '$(CONTAINER_NAME):publish'
+    addPipelineData: false
+    addBaseImageData: false
+
+- task: Docker@2
+  inputs:
+    repository: 'hannakasai002/scheduler-slack'
+    command: 'buildAndPush'
+    arguments: '--force-rm --build-arg CONTAINER_NAME'
+    Dockerfile: '**/final.Dockerfile'
+    buildContext: './Scheduler.Bot'
+    tags: '$(CONTAINER_NAME):$(FINAL_IMAGE_TAG)'
+    addPipelineData: false
+    addBaseImageData: false
