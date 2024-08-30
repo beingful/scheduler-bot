@@ -1,0 +1,3 @@
+services:
+  scheduler-slack:
+    image: hannakasai002/scheduler-slack:latest
