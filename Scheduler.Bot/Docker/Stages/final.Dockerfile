@@ -1,5 +1,5 @@
 ARG CONTAINER_NAME
 
-FROM ${CONTAINER_NAME}:base
+FROM base AS final
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Slack.Bot.Api.dll"]
