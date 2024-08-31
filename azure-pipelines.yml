@@ -6,8 +6,6 @@ pool:
   
 variables:
   BUILD_CONFIGURATION: Release
-  DOCKER_REPOSITORY_USRNM: $(Docker.Username)
-  DOCKER_REPOSITORY_PWD: $(Docker.Password)
   IMAGE_NAME: scheduler-slack
   FINAL_IMAGE_TAG: latest
 
