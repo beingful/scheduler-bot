@@ -13,14 +13,8 @@ steps:
 - task: Docker@2
   displayName: Crete base image
   inputs:
-    command: 'login'
+    containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
-    addPipelineData: false
-    addBaseImageData: false
-
-- task: Docker@2
-  displayName: Crete base image
-  inputs:
     command: 'build'
     arguments: '--target base'
     Dockerfile: '**/base.Dockerfile'
@@ -32,6 +26,8 @@ steps:
 - task: Docker@2
   displayName: Restore
   inputs:
+    containerRegistry: 'docker-hub'
+    repository: 'hannakasai002/scheduler-slack'
     command: 'build'
     arguments: '--build-arg BUILD_CONFIGURATION --target restore'
     Dockerfile: '**/restore.Dockerfile'
@@ -43,6 +39,8 @@ steps:
 - task: Docker@2
   displayName: Build
   inputs:
+    containerRegistry: 'docker-hub'
+    repository: 'hannakasai002/scheduler-slack'
     command: 'build'
     arguments: '--pull=false --build-arg BUILD_CONFIGURATION --build-arg CONTAINER_NAME --target build'
     Dockerfile: '**/build.Dockerfile'
@@ -54,6 +52,8 @@ steps:
 - task: Docker@2
   displayName: Publish
   inputs:
+    containerRegistry: 'docker-hub'
+    repository: 'hannakasai002/scheduler-slack'
     command: 'build'
     arguments: '--pull=false --build-arg CONTAINER_NAME --target publish'
     Dockerfile: '**/publish.Dockerfile'
@@ -64,6 +64,7 @@ steps:
 
 - task: Docker@2
   inputs:
+    containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
     command: 'buildAndPush'
     arguments: '--pull=false --build-arg CONTAINER_NAME --target final'
