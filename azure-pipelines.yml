@@ -6,10 +6,20 @@ pool:
   
 variables:
   BUILD_CONFIGURATION: Release
-  CONTAINER_NAME: scheduler-slack
+  DOCKER_REPOSITORY_USRNM: $(Docker.Username)
+  DOCKER_REPOSITORY_PWD: $(Docker.Password)
+  IMAGE_NAME: scheduler-slack
   FINAL_IMAGE_TAG: latest
 
 steps:
+- task: Docker@2
+  displayName: Crete base image
+  inputs:
+    command: 'login'
+    repository: 'hannakasai002/scheduler-slack'
+    addPipelineData: false
+    addBaseImageData: false
+
 - task: Docker@2
   displayName: Crete base image
   inputs:
@@ -17,7 +27,7 @@ steps:
     arguments: '--target base'
     Dockerfile: '**/base.Dockerfile'
     buildContext: './Scheduler.Bot'
-    tags: '$(CONTAINER_NAME):base'
+    #tags: '$(IMAGE_NAME):base'
     addPipelineData: false
     addBaseImageData: false
 
@@ -28,7 +38,7 @@ steps:
     arguments: '--build-arg BUILD_CONFIGURATION --target restore'
     Dockerfile: '**/restore.Dockerfile'
     buildContext: './Scheduler.Bot'
-    #tags: '$(CONTAINER_NAME):restore'
+    #tags: '$(IMAGE_NAME):restore'
     addPipelineData: false
     addBaseImageData: false
 
@@ -39,7 +49,7 @@ steps:
     arguments: '--pull=false --build-arg BUILD_CONFIGURATION --build-arg CONTAINER_NAME --target build'
     Dockerfile: '**/build.Dockerfile'
     buildContext: './Scheduler.Bot'
-    #tags: '$(CONTAINER_NAME):build'
+    #tags: '$(IMAGE_NAME):build'
     addPipelineData: false
     addBaseImageData: false
 
@@ -50,7 +60,7 @@ steps:
     arguments: '--pull=false --build-arg CONTAINER_NAME --target publish'
     Dockerfile: '**/publish.Dockerfile'
     buildContext: './Scheduler.Bot'
-    #tags: '$(CONTAINER_NAME):publish'
+    #tags: '$(IMAGE_NAME):publish'
     addPipelineData: false
     addBaseImageData: false
 
@@ -61,6 +71,6 @@ steps:
     arguments: '--pull=false --build-arg CONTAINER_NAME --target final'
     Dockerfile: '**/final.Dockerfile'
     buildContext: './Scheduler.Bot'
-    #tags: '$(CONTAINER_NAME):$(FINAL_IMAGE_TAG)'
+    #tags: '$(IMAGE_NAME):$(FINAL_IMAGE_TAG)'
     addPipelineData: false
     addBaseImageData: false
