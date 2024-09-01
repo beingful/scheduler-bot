@@ -27,7 +27,7 @@ steps:
     arguments: '--target base'
     Dockerfile: '**/base.Dockerfile'
     buildContext: './Scheduler.Bot'
-    tags: '$(IMAGE_NAME):base'
+    tags: 'base'
     addPipelineData: false
     addBaseImageData: false
 
@@ -40,7 +40,7 @@ steps:
     arguments: '--target restore --build-arg BUILD_CONFIGURATION'
     Dockerfile: '**/restore.Dockerfile'
     buildContext: './Scheduler.Bot'
-    tags: '$(IMAGE_NAME):restore'
+    tags: 'restore'
     addPipelineData: false
     addBaseImageData: false
 
@@ -53,7 +53,7 @@ steps:
     arguments: '--target build --build-arg BUILD_CONFIGURATION --build-arg CONTAINER_NAME'
     Dockerfile: '**/build.Dockerfile'
     buildContext: './Scheduler.Bot'
-    tags: '$(IMAGE_NAME):build'
+    tags: 'build'
     addPipelineData: false
     addBaseImageData: false
 
@@ -66,7 +66,7 @@ steps:
     arguments: '--target publish --build-arg CONTAINER_NAME'
     Dockerfile: '**/publish.Dockerfile'
     buildContext: './Scheduler.Bot'
-    tags: '$(IMAGE_NAME):publish'
+    tags: 'publish'
     addPipelineData: false
     addBaseImageData: false
 
@@ -78,6 +78,6 @@ steps:
     arguments: '--target final --build-arg CONTAINER_NAME'
     Dockerfile: '**/final.Dockerfile'
     buildContext: './Scheduler.Bot'
-    tags: '$(IMAGE_NAME):$(FINAL_IMAGE_TAG)'
+    tags: '$(FINAL_IMAGE_TAG)'
     addPipelineData: false
     addBaseImageData: false
