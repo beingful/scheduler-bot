@@ -19,13 +19,12 @@ steps:
     addBaseImageData: false
 
 - task: Docker@2
-  displayName: Crete base image
+  displayName: Create a base image
   inputs:
     containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
     arguments: '-t $(IMAGE_NAME)'
-    #arguments: '--target base'
     Dockerfile: '**/base.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: 'base'
@@ -33,12 +32,12 @@ steps:
     addBaseImageData: false
 
 - task: Docker@2
-  displayName: Restore
+  displayName: Restore dependencies
   inputs:
     containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '-t $(IMAGE_NAME) --build-arg BUILD_CONFIGURATION'
+    arguments: '-t $(IMAGE_NAME)'
     Dockerfile: '**/restore.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: 'restore'
@@ -46,12 +45,12 @@ steps:
     addBaseImageData: false
 
 - task: Docker@2
-  displayName: Build
+  displayName: Build the solution
   inputs:
     containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_CONFIGURATION'
+    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_CONFIGURATION=$(BUILD_CONFIGURATION)'
     Dockerfile: '**/build.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: 'build'
@@ -59,12 +58,12 @@ steps:
     addBaseImageData: false
 
 - task: Docker@2
-  displayName: Publish
+  displayName: Publish the API
   inputs:
     containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg CONTAINER_NAME'
+    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_CONFIGURATION=$(BUILD_CONFIGURATION)'
     Dockerfile: '**/publish.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: 'publish'
@@ -72,11 +71,12 @@ steps:
     addBaseImageData: false
 
 - task: Docker@2
+  displayName: Pull the image to the dockerhub
   inputs:
     containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
     command: 'buildAndPush'
-    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg CONTAINER_NAME'
+    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME'
     Dockerfile: '**/final.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: '$(FINAL_IMAGE_TAG)'
