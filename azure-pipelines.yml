@@ -24,7 +24,7 @@ steps:
   inputs:
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '-t $(IMAGE_NAME)'
+    arguments: '--force-rm -t $(IMAGE_NAME)'
     Dockerfile: '**/restore.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: 'restore-$(BUILD_ID)'
@@ -36,7 +36,7 @@ steps:
   inputs:
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID --build-arg BUILD_CONFIGURATION'
+    arguments: '--force-rm -t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID --build-arg BUILD_CONFIGURATION'
     Dockerfile: '**/build.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: 'build-$(BUILD_ID)'
@@ -48,7 +48,7 @@ steps:
   inputs:
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID --build-arg BUILD_CONFIGURATION'
+    arguments: '--force-rm -t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID --build-arg BUILD_CONFIGURATION'
     Dockerfile: '**/publish.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: 'publish-$(BUILD_ID)'
@@ -60,12 +60,12 @@ steps:
   inputs:
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID'
+    arguments: '--force-rm -t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID'
     Dockerfile: '**/final.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: |
       $(FINAL_IMAGE_TAG)
-      $(FINAL_IMAGE_TAG)-$(BUILD_ID)
+      build-$(BUILD_ID)
     addPipelineData: false
     addBaseImageData: false
 
@@ -77,7 +77,7 @@ steps:
     command: 'push'
     tags: |
       $(FINAL_IMAGE_TAG)
-      $(FINAL_IMAGE_TAG)-$(BUILD_ID)
+      build-$(BUILD_ID)
     addPipelineData: false
     addBaseImageData: false
 
