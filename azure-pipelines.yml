@@ -71,14 +71,29 @@ steps:
     addBaseImageData: false
 
 - task: Docker@2
-  displayName: Pull the image to the dockerhub
+  displayName: Build the final image
   inputs:
     containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
-    command: 'buildAndPush'
+    command: 'build'
     arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME'
     Dockerfile: '**/final.Dockerfile'
     buildContext: './Scheduler.Bot'
-    tags: '$(FINAL_IMAGE_TAG)'
+    tags: |
+      $(FINAL_IMAGE_TAG)
+      $(FINAL_IMAGE_TAG)-$(Build.BuildId)
     addPipelineData: false
     addBaseImageData: false
+
+- task: Docker@2
+  displayName: Pull the image
+  inputs:
+    containerRegistry: 'docker-hub'
+    repository: 'hannakasai002/scheduler-slack'
+    command: 'push'
+    tags: |
+      $(FINAL_IMAGE_TAG)
+      $(FINAL_IMAGE_TAG)-$(Build.BuildId)
+    addPipelineData: false
+    addBaseImageData: false
+
