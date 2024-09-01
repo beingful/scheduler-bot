@@ -50,7 +50,7 @@ steps:
     containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '-t $(IMAGE_NAME) --build-arg BUILD_CONFIGURATION --build-arg IMAGE_NAME'
+    arguments: '--progress=plain --no-cache -t $(IMAGE_NAME) --build-arg BUILD_CONFIGURATION --build-arg IMAGE_NAME'
     Dockerfile: '**/build.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: 'build'
