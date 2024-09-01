@@ -6,6 +6,7 @@ pool:
   
 variables:
   BUILD_CONFIGURATION: Release
+  BUILD_ID: $(Build.BuildId)
   IMAGE_NAME: hannakasai002/scheduler-slack
   FINAL_IMAGE_TAG: latest
 
@@ -26,7 +27,7 @@ steps:
     arguments: '-t $(IMAGE_NAME)'
     Dockerfile: '**/restore.Dockerfile'
     buildContext: './Scheduler.Bot'
-    tags: 'restore'
+    tags: 'restore-$(BUILD_ID)'
     addPipelineData: false
     addBaseImageData: false
 
@@ -35,10 +36,10 @@ steps:
   inputs:
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_CONFIGURATION'
+    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID --build-arg BUILD_CONFIGURATION'
     Dockerfile: '**/build.Dockerfile'
     buildContext: './Scheduler.Bot'
-    tags: 'build'
+    tags: 'build-$(BUILD_ID)'
     addPipelineData: false
     addBaseImageData: false
 
@@ -47,10 +48,10 @@ steps:
   inputs:
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_CONFIGURATION'
+    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID --build-arg BUILD_CONFIGURATION'
     Dockerfile: '**/publish.Dockerfile'
     buildContext: './Scheduler.Bot'
-    tags: 'publish'
+    tags: 'publish-$(BUILD_ID)'
     addPipelineData: false
     addBaseImageData: false
 
@@ -59,12 +60,12 @@ steps:
   inputs:
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME'
+    arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID'
     Dockerfile: '**/final.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: |
       $(FINAL_IMAGE_TAG)
-      $(FINAL_IMAGE_TAG)-$(Build.BuildId)
+      $(FINAL_IMAGE_TAG)-$(BUILD_ID)
     addPipelineData: false
     addBaseImageData: false
 
@@ -76,7 +77,7 @@ steps:
     command: 'push'
     tags: |
       $(FINAL_IMAGE_TAG)
-      $(FINAL_IMAGE_TAG)-$(Build.BuildId)
+      $(FINAL_IMAGE_TAG)-$(BUILD_ID)
     addPipelineData: false
     addBaseImageData: false
 
