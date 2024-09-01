@@ -3,4 +3,6 @@ ARG BUILD_CONFIGURATION
 
 FROM ${IMAGE_NAME}:restore
 COPY . .
+RUN echo ${IMAGE_NAME}
+RUN echo ${BUILD_CONFIGURATION}
 RUN dotnet build --no-restore ./Slack.Bot.Api/*.csproj -c ${BUILD_CONFIGURATION}
