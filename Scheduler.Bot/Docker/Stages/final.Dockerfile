@@ -1,5 +1,5 @@
-ARG CONTAINER_NAME
+ARG IMAGE_NAME
 
-FROM base AS final
+FROM ${IMAGE_NAME}:base
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Slack.Bot.Api.dll"]
