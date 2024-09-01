@@ -22,7 +22,7 @@ steps:
   displayName: Restore dependencies
   inputs:
     #containerRegistry: 'docker-hub'
-    #repository: 'hannakasai002/scheduler-slack'
+    repository: 'hannakasai002/scheduler-slack'
     command: 'build'
     arguments: '-t $(IMAGE_NAME)'
     Dockerfile: '**/restore.Dockerfile'
