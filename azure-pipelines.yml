@@ -21,8 +21,8 @@ steps:
 - task: Docker@2
   displayName: Restore dependencies
   inputs:
-    containerRegistry: 'docker-hub'
-    repository: 'hannakasai002/scheduler-slack'
+    #containerRegistry: 'docker-hub'
+    #repository: 'hannakasai002/scheduler-slack'
     command: 'build'
     arguments: '-t $(IMAGE_NAME)'
     Dockerfile: '**/restore.Dockerfile'
@@ -34,8 +34,8 @@ steps:
 - task: Docker@2
   displayName: Build the solution
   inputs:
-    containerRegistry: 'docker-hub'
-    repository: 'hannakasai002/scheduler-slack'
+    #containerRegistry: 'docker-hub'
+    #repository: 'hannakasai002/scheduler-slack'
     command: 'build'
     arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_CONFIGURATION'
     Dockerfile: '**/build.Dockerfile'
@@ -47,8 +47,8 @@ steps:
 - task: Docker@2
   displayName: Publish the API
   inputs:
-    containerRegistry: 'docker-hub'
-    repository: 'hannakasai002/scheduler-slack'
+    #containerRegistry: 'docker-hub'
+    #repository: 'hannakasai002/scheduler-slack'
     command: 'build'
     arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_CONFIGURATION'
     Dockerfile: '**/publish.Dockerfile'
@@ -60,8 +60,8 @@ steps:
 - task: Docker@2
   displayName: Build the final image
   inputs:
-    containerRegistry: 'docker-hub'
-    repository: 'hannakasai002/scheduler-slack'
+    #containerRegistry: 'docker-hub'
+    #repository: 'hannakasai002/scheduler-slack'
     command: 'build'
     arguments: '-t $(IMAGE_NAME) --build-arg IMAGE_NAME'
     Dockerfile: '**/final.Dockerfile'
