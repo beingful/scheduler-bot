@@ -1,6 +1,6 @@
 ARG IMAGE_NAME
-ARG CONFIGURATION
 
 FROM ${IMAGE_NAME}:restore
+ARG CONFIGURATION
 COPY . .
-RUN dotnet build --no-restore ./Slack.Bot.Api/*.csproj -c $CONFIGURATION
+RUN dotnet build --no-restore ./Slack.Bot.Api/*.csproj -c ${CONFIGURATION}
