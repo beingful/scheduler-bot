@@ -19,19 +19,6 @@ steps:
     addBaseImageData: false
 
 - task: Docker@2
-  displayName: Create a base image
-  inputs:
-    containerRegistry: 'docker-hub'
-    repository: 'hannakasai002/scheduler-slack'
-    command: 'build'
-    arguments: '-t $(IMAGE_NAME)'
-    Dockerfile: '**/base.Dockerfile'
-    buildContext: './Scheduler.Bot'
-    tags: 'base'
-    addPipelineData: false
-    addBaseImageData: false
-
-- task: Docker@2
   displayName: Restore dependencies
   inputs:
     containerRegistry: 'docker-hub'
@@ -97,3 +84,10 @@ steps:
     addPipelineData: false
     addBaseImageData: false
 
+- task: Docker@2
+  displayName: Log out of a docker registry
+  inputs:
+    containerRegistry: 'docker-hub'
+    command: 'logout'
+    addPipelineData: false
+    addBaseImageData: false
