@@ -2,4 +2,4 @@ ARG IMAGE_NAME
 ARG BUILD_CONFIGURATION
 
 FROM ${IMAGE_NAME}:build
-RUN dotnet publish --no-build ./Slack.Bot.Api/*.csproj -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish --no-build ./Slack.Bot.Api/*.csproj -c Release -o /app/publish /p:UseAppHost=false
