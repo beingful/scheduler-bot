@@ -1,6 +1,7 @@
 ARG IMAGE_NAME
+ARG BUILD_ID
 
-FROM ${IMAGE_NAME}:publish AS publish
+FROM ${IMAGE_NAME}:publish-${BUILD_ID} AS publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 USER app
