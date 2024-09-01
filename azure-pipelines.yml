@@ -1,12 +1,13 @@
 trigger:
-- main
+- azure-pipelines
 
 pool:
   vmImage: ubuntu-latest
   
 variables:
   BUILD_CONFIGURATION: Release
-  IMAGE_NAME: scheduler-slack
+  BUILD_ID: $(Build.BuildId)
+  IMAGE_NAME: hannakasai002/scheduler-slack
   FINAL_IMAGE_TAG: latest
 
 steps:
@@ -19,65 +20,71 @@ steps:
     addBaseImageData: false
 
 - task: Docker@2
-  displayName: Crete base image
+  displayName: Restore dependencies
   inputs:
-    containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '--target base'
-    Dockerfile: '**/base.Dockerfile'
-    buildContext: './Scheduler.Bot'
-    tags: 'base'
-    addPipelineData: false
-    addBaseImageData: false
-
-- task: Docker@2
-  displayName: Restore
-  inputs:
-    containerRegistry: 'docker-hub'
-    repository: 'hannakasai002/scheduler-slack'
-    command: 'build'
-    arguments: '--target restore --build-arg BUILD_CONFIGURATION'
+    arguments: '--force-rm -t $(IMAGE_NAME)'
     Dockerfile: '**/restore.Dockerfile'
     buildContext: './Scheduler.Bot'
-    tags: 'restore'
+    tags: 'restore-$(BUILD_ID)'
     addPipelineData: false
     addBaseImageData: false
 
 - task: Docker@2
-  displayName: Build
+  displayName: Build the solution
   inputs:
-    containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '--target build --build-arg BUILD_CONFIGURATION --build-arg CONTAINER_NAME'
+    arguments: '--force-rm -t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID --build-arg BUILD_CONFIGURATION'
     Dockerfile: '**/build.Dockerfile'
     buildContext: './Scheduler.Bot'
-    tags: 'build'
+    tags: 'build-$(BUILD_ID)'
     addPipelineData: false
     addBaseImageData: false
 
 - task: Docker@2
-  displayName: Publish
+  displayName: Publish the API
   inputs:
-    containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '--target publish --build-arg CONTAINER_NAME'
+    arguments: '--force-rm -t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID --build-arg BUILD_CONFIGURATION'
     Dockerfile: '**/publish.Dockerfile'
     buildContext: './Scheduler.Bot'
-    tags: 'publish'
+    tags: 'publish-$(BUILD_ID)'
     addPipelineData: false
     addBaseImageData: false
 
 - task: Docker@2
+  displayName: Build the final image
+  inputs:
+    repository: 'hannakasai002/scheduler-slack'
+    command: 'build'
+    arguments: '--force-rm -t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID'
+    Dockerfile: '**/final.Dockerfile'
+    buildContext: './Scheduler.Bot'
+    tags: |
+      $(FINAL_IMAGE_TAG)
+      build-$(BUILD_ID)
+    addPipelineData: false
+    addBaseImageData: false
+
+- task: Docker@2
+  displayName: Pull the image
   inputs:
     containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
-    command: 'buildAndPush'
-    arguments: '--target final --build-arg CONTAINER_NAME'
-    Dockerfile: '**/final.Dockerfile'
-    buildContext: './Scheduler.Bot'
-    tags: '$(FINAL_IMAGE_TAG)'
+    command: 'push'
+    tags: |
+      $(FINAL_IMAGE_TAG)
+      build-$(BUILD_ID)
+    addPipelineData: false
+    addBaseImageData: false
+
+- task: Docker@2
+  displayName: Log out of a docker registry
+  inputs:
+    containerRegistry: 'docker-hub'
+    command: 'logout'
     addPipelineData: false
     addBaseImageData: false

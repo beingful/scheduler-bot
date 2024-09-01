@@ -1,5 +1,6 @@
-ARG CONTAINER_NAME
-ARG BUILD_CONFIGURATION
+ARG IMAGE_NAME
+ARG BUILD_ID
 
-FROM build AS publish
-RUN dotnet publish --no-build ./Slack.Bot.Api/*.csproj -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+FROM ${IMAGE_NAME}:build-${BUILD_ID}
+ARG BUILD_CONFIGURATION
+RUN dotnet publish --no-build ./Slack.Bot.Api/*.csproj -c ${BUILD_CONFIGURATION} -o /app/publish /p:UseAppHost=false
