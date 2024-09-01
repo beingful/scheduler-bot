@@ -27,6 +27,7 @@ public static class HomeEndpoints
             return "Hello, user!";
         })
         .WithName("GetGreetings")
+        .WithDescription("Say hello to user")
         .WithOpenApi(); ;
     }
 }
