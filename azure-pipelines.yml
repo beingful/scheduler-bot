@@ -11,6 +11,14 @@ variables:
 
 steps:
 - task: Docker@2
+  displayName: Log into a docker registry
+  inputs:
+    containerRegistry: 'docker-hub'
+    command: 'login'
+    addPipelineData: false
+    addBaseImageData: false
+
+- task: Docker@2
   displayName: Crete base image
   inputs:
     containerRegistry: 'docker-hub'
@@ -19,7 +27,7 @@ steps:
     arguments: '--target base'
     Dockerfile: '**/base.Dockerfile'
     buildContext: './Scheduler.Bot'
-    #tags: '$(IMAGE_NAME):base'
+    tags: '$(IMAGE_NAME):base'
     addPipelineData: false
     addBaseImageData: false
 
@@ -29,10 +37,10 @@ steps:
     containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '--build-arg BUILD_CONFIGURATION --target restore'
+    arguments: '--target restore --build-arg BUILD_CONFIGURATION'
     Dockerfile: '**/restore.Dockerfile'
     buildContext: './Scheduler.Bot'
-    #tags: '$(IMAGE_NAME):restore'
+    tags: '$(IMAGE_NAME):restore'
     addPipelineData: false
     addBaseImageData: false
 
@@ -42,10 +50,10 @@ steps:
     containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '--pull=false --build-arg BUILD_CONFIGURATION --build-arg CONTAINER_NAME --target build'
+    arguments: '--target build --build-arg BUILD_CONFIGURATION --build-arg CONTAINER_NAME'
     Dockerfile: '**/build.Dockerfile'
     buildContext: './Scheduler.Bot'
-    #tags: '$(IMAGE_NAME):build'
+    tags: '$(IMAGE_NAME):build'
     addPipelineData: false
     addBaseImageData: false
 
@@ -55,10 +63,10 @@ steps:
     containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
     command: 'build'
-    arguments: '--pull=false --build-arg CONTAINER_NAME --target publish'
+    arguments: '--target publish --build-arg CONTAINER_NAME'
     Dockerfile: '**/publish.Dockerfile'
     buildContext: './Scheduler.Bot'
-    #tags: '$(IMAGE_NAME):publish'
+    tags: '$(IMAGE_NAME):publish'
     addPipelineData: false
     addBaseImageData: false
 
@@ -67,9 +75,9 @@ steps:
     containerRegistry: 'docker-hub'
     repository: 'hannakasai002/scheduler-slack'
     command: 'buildAndPush'
-    arguments: '--pull=false --build-arg CONTAINER_NAME --target final'
+    arguments: '--target final --build-arg CONTAINER_NAME'
     Dockerfile: '**/final.Dockerfile'
     buildContext: './Scheduler.Bot'
-    #tags: '$(IMAGE_NAME):$(FINAL_IMAGE_TAG)'
+    tags: '$(IMAGE_NAME):$(FINAL_IMAGE_TAG)'
     addPipelineData: false
     addBaseImageData: false
