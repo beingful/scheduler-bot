@@ -1,19 +1,27 @@
 using Slack.Bot.Api.Endpoints;
+using Slack.Bot.Api.Services;
+using SlackNet.AspNetCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder();
 
 builder.Logging.AddAzureWebAppDiagnostics();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services
+    .AddEndpointsApiExplorer()
+    .AddSwaggerGen()
+    .AddSlackServices(builder.Configuration);
 
 var webApp = builder.Build();
 
 webApp.UseSwagger();
 webApp.UseSwaggerUI();
 
+webApp.UseSlackNet();
+
 webApp.UseHttpsRedirection();
 
-webApp.MapHomeEndpoints();
+webApp
+    .AddHomeEndpoints()
+    .AddSlackEndpoints();
 
 webApp.Run();
