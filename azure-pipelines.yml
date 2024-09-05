@@ -17,7 +17,7 @@ variables:
   BUILD_ID: $(Build.BuildId)
   IMAGE_NAME: hannakasai002/scheduler-slack
   FINAL_IMAGE_TAG: latest
-  IS_PR_RUN: $eq(variables['Build.Reason'], 'PullRequest')
+  IS_PR_RUN: $[eq(variables['Build.Reason'], 'PullRequest')]
 
 steps:
 - task: Docker@2
