@@ -20,6 +20,8 @@ variables:
   IS_PR_RUN: $eq(variables['Build.Reason'], 'PullRequest')
 
 steps:
+- script: Echo Build.Reason $(Build.Reason) IS_PR_RUN $(IS_PR_RUN)
+
 - task: Docker@2
   displayName: Log into a docker registry
   inputs:
