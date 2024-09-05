@@ -2,13 +2,14 @@
 
 public static class HomeEndpoints
 {
-    public static void MapHomeEndpoints(this WebApplication webApplication)
+    public static WebApplication AddHomeEndpoints(this WebApplication webApplication)
     {
-        webApplication.GetSwaggerStartPage();
-        webApplication.GetGreetingsEndpoint();
+        return webApplication
+            .GetSwaggerEndpoint()
+            .GetGreetingsEndpoint();
     }
 
-    private static void GetSwaggerStartPage(this WebApplication webApplication)
+    private static WebApplication GetSwaggerEndpoint(this WebApplication webApplication)
     {
         webApplication.MapGet("/", context =>
         {
@@ -18,9 +19,11 @@ public static class HomeEndpoints
             });
         })
         .ExcludeFromDescription();
+
+        return webApplication;
     }
 
-    private static void GetGreetingsEndpoint(this WebApplication webApplication)
+    private static WebApplication GetGreetingsEndpoint(this WebApplication webApplication)
     {
         webApplication.MapGet("/greetings", () =>
         {
@@ -28,6 +31,8 @@ public static class HomeEndpoints
         })
         .WithName("GetGreetings")
         .WithDescription("Say hello to user")
-        .WithOpenApi(); ;
+        .WithOpenApi();
+
+        return webApplication;
     }
 }
