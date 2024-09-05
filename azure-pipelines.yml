@@ -1,14 +1,23 @@
 trigger:
-- main
+  batch: true
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
 
 pool:
   vmImage: ubuntu-latest
-  
+
 variables:
   BUILD_CONFIGURATION: Release
   BUILD_ID: $(Build.BuildId)
   IMAGE_NAME: hannakasai002/scheduler-slack
   FINAL_IMAGE_TAG: latest
+  IS_PR_RUN: $eq(variables['Build.Reason'], 'PullRequest')
 
 steps:
 - task: Docker@2
@@ -54,6 +63,7 @@ steps:
     tags: 'publish-$(BUILD_ID)'
     addPipelineData: false
     addBaseImageData: false
+  condition: and(succeeded(), eq(variables.IS_PR_RUN, false))
 
 - task: Docker@2
   displayName: Build the final image
@@ -68,6 +78,7 @@ steps:
       build-$(BUILD_ID)
     addPipelineData: false
     addBaseImageData: false
+  condition: and(succeeded(), eq(variables.IS_PR_RUN, false))
 
 - task: Docker@2
   displayName: Pull the image
@@ -80,6 +91,7 @@ steps:
       build-$(BUILD_ID)
     addPipelineData: false
     addBaseImageData: false
+  condition: and(succeeded(), eq(variables.IS_PR_RUN, false))
 
 - task: Docker@2
   displayName: Log out of a docker registry
