@@ -20,6 +20,7 @@ internal static class ServiceRegistration
                 slackConfiguration
                     .UseApiToken(slackApiConfiguration.AccessToken)
                     .UseSigningSecret(slackApiConfiguration.SigningSecret)
+                    .RegisterEventHandler<BotMessage, BotMessageHandler>()
                     .RegisterEventHandler<MessageEvent, MessageHandler>();
             });
     }
