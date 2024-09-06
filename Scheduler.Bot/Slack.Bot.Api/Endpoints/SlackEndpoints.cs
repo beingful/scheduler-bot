@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SlackNet.AspNetCore;
 using SlackNet.Events;
+using System.Net;
 
 namespace Slack.Bot.Api.Endpoints;
 
@@ -21,7 +22,10 @@ internal static class SlackEndpoints
                 HttpContext httpContext,
                 ISlackRequestHandler requestHandler) =>
             {
-                return Results.Ok(request.Challenge);
+                return Results.Text(
+                    content: request.Challenge,
+                    contentType: "text/plain",
+                    statusCode: (int)HttpStatusCode.OK);
             })
             .WithDisplayName("Url verification endpoint")
             .WithDescription("The endpoint of the Scheduler Slack Bot. Designed to verify the bot API.");
