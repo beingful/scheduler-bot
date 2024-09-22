@@ -1,31 +1,25 @@
-﻿using SlackNet;
-using SlackNet.Events;
+﻿using SlackNet.Events;
+using SlackNet;
 using SlackNet.WebApi;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace Slack.Bot.Api.Handlers;
+namespace Slack.Bot.Api.Handlers.Messages.Types.Commands;
 
-internal sealed class MessageHandler : IEventHandler<MessageEvent>
+public sealed class GreetCommandHandler : ICommandEventHandler
 {
     private readonly ISlackApiClient _slackApiClient;
     private readonly ILogger _logger;
 
-    public MessageHandler(
+    public GreetCommandHandler(
         ISlackApiClient slackApiClient,
-        ILogger<MessageHandler> logger)
+        ILogger<GreetCommandHandler> logger)
     {
         _slackApiClient = slackApiClient;
         _logger = logger;
     }
 
-    async Task IEventHandler<MessageEvent>.Handle(MessageEvent messageEvent)
+    public async Task HandleAsync(MessageEvent messageEvent)
     {
-        _logger.LogInformation(
-            "Message \'{0}\' was posted in the channel \'{1}\' by the user \'{2}\'",
-            messageEvent.Text,
-            messageEvent.Channel,
-            messageEvent.User);
-
         try
         {
             await _slackApiClient.Chat.PostMessage(new Message
