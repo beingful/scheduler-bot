@@ -1,6 +1,6 @@
 ﻿namespace Slack.Bot.Api.Configuration;
 
-internal sealed class ConfigurationProvider
+public sealed class ConfigurationProvider
 {
     private readonly IConfiguration _configuration;
 

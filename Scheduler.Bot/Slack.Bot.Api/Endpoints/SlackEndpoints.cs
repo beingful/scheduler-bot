@@ -2,7 +2,7 @@
 
 namespace Slack.Bot.Api.Endpoints;
 
-internal static class SlackEndpoints
+public static class SlackEndpoints
 {
     public static WebApplication AddSlackEndpoints(this WebApplication webApp)
     {
