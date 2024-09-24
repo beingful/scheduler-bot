@@ -1,5 +1,8 @@
 ﻿using Slack.Bot.Api.Configuration.Models;
+using SlackNet;
 using SlackNet.Events;
+using SlackNet.WebApi;
+using System;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Slack.Bot.Api.Handlers.Messages;
@@ -8,15 +11,18 @@ public sealed class MessageEventHandler : SlackNet.IEventHandler<MessageEvent>
 {
     private readonly SlackBot _bot;
     private readonly IMessageEventHandler _userMessageHandler;
+    private readonly ISlackApiClient _slackApiClient;
     private readonly ILogger _logger;
 
     public MessageEventHandler(
         SlackBot bot,
         IMessageEventHandler userMessageHandler,
+        ISlackApiClient slackApiClient,
         ILogger<MessageEventHandler> logger)
     {
         _bot = bot;
         _userMessageHandler = userMessageHandler;
+        _slackApiClient = slackApiClient;
         _logger = logger;
     }
 
@@ -31,6 +37,16 @@ public sealed class MessageEventHandler : SlackNet.IEventHandler<MessageEvent>
         if (IsNotBot(messageEvent.User))
         {
             await _userMessageHandler.HandleAsync(messageEvent);
+        }
+
+        if (messageEvent.Text == "hi")
+        {
+            await _slackApiClient.Chat.PostMessage(new Message
+            {
+                Text = string.Format(
+                $"Hello, {messageEvent.User}!"),
+                Channel = messageEvent.Channel
+            });
         }
     }
 
