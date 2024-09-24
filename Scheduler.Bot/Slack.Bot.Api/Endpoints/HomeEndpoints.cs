@@ -1,4 +1,7 @@
-﻿namespace Slack.Bot.Api.Endpoints;
+﻿using Microsoft.AspNetCore.Mvc;
+using Slack.Bot.Api.Handlers.Messages;
+
+namespace Slack.Bot.Api.Endpoints;
 
 public static class HomeEndpoints
 {
@@ -25,8 +28,10 @@ public static class HomeEndpoints
 
     private static WebApplication GetGreetingsEndpoint(this WebApplication webApplication)
     {
-        webApplication.MapGet("/greetings", () =>
+        webApplication.MapGet("/greetings", ([FromServices] ILogger<MessageEventHandler> logger) =>
         {
+            logger.LogInformation("Hello, user!");
+
             return "Hello, user!";
         })
         .WithName("GetGreetings")
