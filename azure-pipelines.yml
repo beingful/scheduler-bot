@@ -15,7 +15,8 @@ pool:
 variables:
   BUILD_CONFIGURATION: Release
   BUILD_ID: $(Build.BuildId)
-  IMAGE_NAME: hannakasai002/scheduler-slack
+  REPOSITORY: hannakasai002/unity-publisher-tool-bot
+  IMAGE: hannakasai002/unity-publisher-tool-bot
   FINAL_IMAGE_TAG: latest
   IS_PR_RUN: $[eq(variables['Build.Reason'], 'PullRequest')]
 
@@ -31,9 +32,9 @@ steps:
 - task: Docker@2
   displayName: Restore dependencies
   inputs:
-    repository: 'hannakasai002/scheduler-slack'
+    repository: $(REPOSITORY)
     command: 'build'
-    arguments: '--force-rm -t $(IMAGE_NAME)'
+    arguments: '--force-rm -t $(IMAGE)'
     Dockerfile: '**/restore.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: 'restore-$(BUILD_ID)'
@@ -43,9 +44,9 @@ steps:
 - task: Docker@2
   displayName: Build the solution
   inputs:
-    repository: 'hannakasai002/scheduler-slack'
+    repository: $(REPOSITORY)
     command: 'build'
-    arguments: '--force-rm -t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID --build-arg BUILD_CONFIGURATION'
+    arguments: '--force-rm -t $(IMAGE) --build-arg IMAGE --build-arg BUILD_ID --build-arg BUILD_CONFIGURATION'
     Dockerfile: '**/build.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: 'build-$(BUILD_ID)'
@@ -55,9 +56,9 @@ steps:
 - task: Docker@2
   displayName: Publish the API
   inputs:
-    repository: 'hannakasai002/scheduler-slack'
+    repository: $(REPOSITORY)
     command: 'build'
-    arguments: '--force-rm -t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID --build-arg BUILD_CONFIGURATION'
+    arguments: '--force-rm -t $(IMAGE) --build-arg IMAGE --build-arg BUILD_ID --build-arg BUILD_CONFIGURATION'
     Dockerfile: '**/publish.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: 'publish-$(BUILD_ID)'
@@ -68,9 +69,9 @@ steps:
 - task: Docker@2
   displayName: Build the final image
   inputs:
-    repository: 'hannakasai002/scheduler-slack'
+    repository: $(REPOSITORY)
     command: 'build'
-    arguments: '--force-rm -t $(IMAGE_NAME) --build-arg IMAGE_NAME --build-arg BUILD_ID'
+    arguments: '--force-rm -t $(IMAGE) --build-arg IMAGE --build-arg BUILD_ID'
     Dockerfile: '**/final.Dockerfile'
     buildContext: './Scheduler.Bot'
     tags: |
@@ -84,7 +85,7 @@ steps:
   displayName: Pull the image
   inputs:
     containerRegistry: 'docker-hub'
-    repository: 'hannakasai002/scheduler-slack'
+    repository: $(REPOSITORY)
     command: 'push'
     tags: |
       $(FINAL_IMAGE_TAG)
