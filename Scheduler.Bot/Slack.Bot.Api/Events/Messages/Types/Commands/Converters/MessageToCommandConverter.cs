@@ -33,6 +33,6 @@ public sealed partial class MessageToCommandConverter : MessageConverter<Command
         return command;
     }
 
-    [GeneratedRegex("^/[a-z]+$", options: RegexOptions.IgnoreCase)]
+    [GeneratedRegex("^-[a-z]+$", options: RegexOptions.IgnoreCase)]
     protected override partial Regex Pattern();
 }
