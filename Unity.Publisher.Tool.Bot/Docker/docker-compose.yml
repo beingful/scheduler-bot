@@ -1,0 +1,3 @@
+services:
+  unity-publisher-tool-bot:
+    image: hannakasai002/unity-publisher-tool-bot:latest

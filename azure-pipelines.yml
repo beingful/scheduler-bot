@@ -14,6 +14,7 @@ pool:
 
 variables:
   BUILD_CONFIGURATION: Release
+  DOCKER_BUILD_CONTEXT: ./Unity.Publisher.Tool.Bot
   BUILD_ID: $(Build.BuildId)
   REPOSITORY: hannakasai002/unity-publisher-tool-bot
   IMAGE: hannakasai002/unity-publisher-tool-bot
@@ -36,7 +37,7 @@ steps:
     command: 'build'
     arguments: '--force-rm -t $(IMAGE)'
     Dockerfile: '**/restore.Dockerfile'
-    buildContext: './Scheduler.Bot'
+    buildContext: $(DOCKER_BUILD_CONTEXT)
     tags: 'restore-$(BUILD_ID)'
     addPipelineData: false
     addBaseImageData: false
@@ -48,7 +49,7 @@ steps:
     command: 'build'
     arguments: '--force-rm -t $(IMAGE) --build-arg IMAGE --build-arg BUILD_ID --build-arg BUILD_CONFIGURATION'
     Dockerfile: '**/build.Dockerfile'
-    buildContext: './Scheduler.Bot'
+    buildContext: $(DOCKER_BUILD_CONTEXT)
     tags: 'build-$(BUILD_ID)'
     addPipelineData: false
     addBaseImageData: false
@@ -60,7 +61,7 @@ steps:
     command: 'build'
     arguments: '--force-rm -t $(IMAGE) --build-arg IMAGE --build-arg BUILD_ID --build-arg BUILD_CONFIGURATION'
     Dockerfile: '**/publish.Dockerfile'
-    buildContext: './Scheduler.Bot'
+    buildContext: $(DOCKER_BUILD_CONTEXT)
     tags: 'publish-$(BUILD_ID)'
     addPipelineData: false
     addBaseImageData: false
@@ -73,7 +74,7 @@ steps:
     command: 'build'
     arguments: '--force-rm -t $(IMAGE) --build-arg IMAGE --build-arg BUILD_ID'
     Dockerfile: '**/final.Dockerfile'
-    buildContext: './Scheduler.Bot'
+    buildContext: $(DOCKER_BUILD_CONTEXT)
     tags: |
       $(FINAL_IMAGE_TAG)
       build-$(BUILD_ID)

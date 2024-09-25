@@ -1,3 +1,0 @@
-services:
-  scheduler-slack:
-    image: hannakasai002/unity-publisher-tool-bot:latest
