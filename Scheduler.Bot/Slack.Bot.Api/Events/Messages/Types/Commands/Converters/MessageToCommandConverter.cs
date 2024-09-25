@@ -20,7 +20,7 @@ public sealed partial class MessageToCommandConverter : MessageConverter<Command
         {
             string commandName = Pattern().Match(message).Value[1..];
 
-            command = (Command)Enum.Parse(typeof(Command), message, ignoreCase: true);
+            command = (Command)Enum.Parse(typeof(Command), commandName, ignoreCase: true);
         }
         catch (Exception exception)
         {
