@@ -33,6 +33,7 @@ public static class ServiceRegistration
                         );
 
                         return new MessageEventHandler(
+                            slackApiClient: serviceProvider.GetRequiredService<ISlackApiClient>(),
                             bot: bot,
                             userMessageHandler: new UserMessageHandler(
                                 messageTypeResolver: new MessageTypeResolver(
