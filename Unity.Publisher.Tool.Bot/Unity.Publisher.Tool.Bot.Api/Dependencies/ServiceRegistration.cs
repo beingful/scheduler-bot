@@ -52,8 +52,10 @@ public static class ServiceRegistration
                             logger: serviceProvider.GetRequiredService<ILogger<MessageToCommandConverter>>()
                         );
 
+                        ISlackApiClient scackApiClient = serviceProvider.GetRequiredService<ISlackApiClient>();
+
                         return new MessageEventHandler(
-                            slackApiClient: serviceProvider.GetRequiredService<ISlackApiClient>(),
+                            slackApiClient: scackApiClient,
                             bot: serviceProvider.GetRequiredService<SlackBot>(),
                             userMessageHandler: new UserMessageHandler(
                                 messageTypeResolver: new MessageTypeResolver(
@@ -72,13 +74,14 @@ public static class ServiceRegistration
                                                 },
                                                 {
                                                     Command.Greet, new GreetCommandHandler(
-                                                        slackApiClient: serviceProvider.GetRequiredService<ISlackApiClient>(),
+                                                        slackApiClient: scackApiClient,
                                                         logger: serviceProvider.GetRequiredService<ILogger<GreetCommandHandler>>())
                                                 },
                                                 {
                                                     Command.Notification, new NotificationCommandHandler(
                                                         notificationSettings: serviceProvider.GetRequiredService<NotificationSettings>(),
                                                         eventNotificationApi: serviceProvider.GetRequiredService<EventNotificationApi>(),
+                                                        slackApiClient: scackApiClient,
                                                         logger: serviceProvider.GetRequiredService<ILogger<NotificationCommandHandler>>())
                                                 }
                                             }
