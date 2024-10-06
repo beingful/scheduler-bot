@@ -3,5 +3,6 @@
 public enum Command
 {
     Unknown,
-    Greet
+    Greet,
+    Notification
 }

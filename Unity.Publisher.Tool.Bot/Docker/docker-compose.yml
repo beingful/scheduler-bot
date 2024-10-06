@@ -1,3 +1,14 @@
 services:
   unity-publisher-tool-bot:
     image: hannakasai002/unity-publisher-tool-bot:latest
+    container_name: unity-publisher-tool-bot
+    ports:
+      - 8080:8080
+
+  unity-publisher-tool:
+    image: hannakasai002/unity-publisher-tool:latest
+    container_name: unity-publisher-tool
+
+  notificator:
+    image: hannakasai002/notificator:latest
+    container_name: notificator

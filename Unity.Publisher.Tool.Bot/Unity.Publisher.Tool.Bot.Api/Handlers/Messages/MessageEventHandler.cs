@@ -2,7 +2,6 @@
 using SlackNet;
 using SlackNet.Events;
 using SlackNet.WebApi;
-using System;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Bot.Api.Handlers.Messages;

@@ -1,5 +1,5 @@
 using Bot.Api.Endpoints;
-using Bot.Api.Services;
+using Bot.Api.Dependencies;
 using SlackNet.AspNetCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder();
@@ -9,6 +9,8 @@ builder.Logging.AddAzureWebAppDiagnostics();
 builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
+    .AddConfigurationModels(builder.Configuration)
+    .AddApiServices()
     .AddSlackServices(builder.Configuration);
 
 var webApp = builder.Build();

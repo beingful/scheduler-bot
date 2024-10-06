@@ -5,8 +5,6 @@ VisualStudioVersion = 17.11.35208.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unity.Publisher.Tool.Bot.Api", "Unity.Publisher.Tool.Bot.Api\Unity.Publisher.Tool.Bot.Api.csproj", "{7E5AFB26-3B0F-42D2-A3C0-209CDA907956}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notificator.Api", "..\Submodules\notificator\Notificator\Notificator.Api\Notificator.Api.csproj", "{884A5297-612B-444B-8265-73A1E4CA8BA8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
