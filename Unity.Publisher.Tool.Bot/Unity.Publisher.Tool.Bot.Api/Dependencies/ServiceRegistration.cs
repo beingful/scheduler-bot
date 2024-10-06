@@ -8,33 +8,55 @@ using Bot.Api.Events.Messages;
 using Bot.Api.Events.Messages.Types;
 using Bot.Api.Handlers.Messages.Types.Commands;
 using Bot.Api.Events.Messages.Types.Commands;
+using Bot.Api.APIs.Notifications;
+using ConfigurationProvider = Bot.Api.Configuration.ConfigurationProvider;
 
-namespace Bot.Api.Services;
+namespace Bot.Api.Dependencies;
 
 public static class ServiceRegistration
 {
+    public static IServiceCollection AddConfigurationModels(this IServiceCollection services, IConfiguration configuration)
+    {
+        ConfigurationProvider configurationProvider = new(configuration);
+
+        return services
+            .AddSingleton<SlackBot>(_ =>
+            {
+                return configurationProvider.GetSection<SlackBot>();
+            })
+            .AddSingleton<NotificationSettings>(_ =>
+            {
+                return configurationProvider.GetSection<NotificationSettings>();
+            });
+    }
+
+    public static IServiceCollection AddApiServices(this IServiceCollection services)
+    {
+        return services.AddScoped<EventNotificationApi>();
+    }
+
     public static IServiceCollection AddSlackServices(this IServiceCollection services, IConfiguration configuration)
     {
         return services
             .AddSlackNet(slackConfiguration =>
             {
-                Configuration.ConfigurationProvider configurationProvider = new(configuration);
-
-                SlackApi slackApiConfiguration = configurationProvider.GetSection<SlackApi>();
+                SlackApi slackApiConfiguration =
+                    new ConfigurationProvider(configuration).GetSection<SlackApi>();
 
                 slackConfiguration
                     .UseApiToken(slackApiConfiguration.AccessToken)
                     .UseSigningSecret(slackApiConfiguration.SigningSecret)
                     .RegisterEventHandler<MessageEvent>(serviceProvider =>
                     {
-                        SlackBot bot = configurationProvider.GetSection<SlackBot>();
                         MessageToCommandConverter messageToCommandConverter = new(
                             logger: serviceProvider.GetRequiredService<ILogger<MessageToCommandConverter>>()
                         );
 
+                        ISlackApiClient scackApiClient = serviceProvider.GetRequiredService<ISlackApiClient>();
+
                         return new MessageEventHandler(
-                            slackApiClient: serviceProvider.GetRequiredService<ISlackApiClient>(),
-                            bot: bot,
+                            slackApiClient: scackApiClient,
+                            bot: serviceProvider.GetRequiredService<SlackBot>(),
                             userMessageHandler: new UserMessageHandler(
                                 messageTypeResolver: new MessageTypeResolver(
                                     messageConverters: [ messageToCommandConverter ]
@@ -48,14 +70,19 @@ public static class ServiceRegistration
                                             {
                                                 {
                                                     Command.Unknown, new UnknownCommandHandler(
-                                                        logger: serviceProvider.GetRequiredService<ILogger<UnknownCommandHandler>>()
-                                                    )
+                                                        logger: serviceProvider.GetRequiredService<ILogger<UnknownCommandHandler>>())
                                                 },
                                                 {
                                                     Command.Greet, new GreetCommandHandler(
-                                                        slackApiClient: serviceProvider.GetRequiredService<ISlackApiClient>(),
-                                                        logger: serviceProvider.GetRequiredService<ILogger<GreetCommandHandler>>()
-                                                    )
+                                                        slackApiClient: scackApiClient,
+                                                        logger: serviceProvider.GetRequiredService<ILogger<GreetCommandHandler>>())
+                                                },
+                                                {
+                                                    Command.Notification, new NotificationCommandHandler(
+                                                        notificationSettings: serviceProvider.GetRequiredService<NotificationSettings>(),
+                                                        eventNotificationApi: serviceProvider.GetRequiredService<EventNotificationApi>(),
+                                                        slackApiClient: scackApiClient,
+                                                        logger: serviceProvider.GetRequiredService<ILogger<NotificationCommandHandler>>())
                                                 }
                                             }
                                         )
